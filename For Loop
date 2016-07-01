@@ -1,0 +1,60 @@
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int szs,szp;
+        vector<vector<bool> > flag;
+        
+        szs=(int)s.size();
+        szp=(int)p.size();
+        flag.resize(szs+1,vector<bool>(szp+1,false));
+        flag[szs][szp]=true;
+        
+        for(int i=szp-1;i>=0;i--){
+            if(p[i]=='*'){
+                flag[szs][i]=false;
+            }else{
+                if(i+1<szp && p[i+1]=='*'){
+                    flag[szs][i]=flag[szs][i+2];
+                }else{
+                    flag[szs][i]=false;
+                }
+            }
+        }
+        
+        for(int i=szs-1;i>=0;i--){
+            if(s[i]=='*'){
+                flag[i][szp]=false;
+            }else{
+                if(i+1<szs && s[i+1]=='*'){
+                    flag[i][szp]=flag[i+2][szp];
+                }else{
+                    flag[i][szp]=false;
+                }
+            }
+        }
+        
+        for(int i=szs-1;i>=0;i--){
+            for(int j=szp-1;j>=0;j--){
+                if(p[j]=='*'){
+                    flag[i][j]=false;
+                }else{
+                    if(j+1<szp && p[j+1]=='*'){
+                        if(p[j]=='.'||p[j]==s[i]||s[i]=='.'){
+                            flag[i][j]=flag[i][j+2]||flag[i+1][j];
+                        }else{
+                            flag[i][j]=flag[i][j+2];
+                        }
+                    }else{
+                        if(p[j]=='.'||p[j]==s[i]||s[i]=='.'){
+                            flag[i][j]=flag[i+1][j+1];
+                        }else{
+                            flag[i][j]=false;
+                        }
+                    }
+                }
+            }
+        }
+        
+        return flag[0][0];
+    }
+};
